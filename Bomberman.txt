@@ -1,0 +1,97 @@
+    class TheBombermanGame
+    {
+
+        /*
+         * Complete the 'bomberMan' function below.
+         *
+         * The function is expected to return a STRING_ARRAY.
+         * The function accepts following parameters:
+         *  1. INTEGER n
+         *  2. STRING_ARRAY grid
+         */
+
+        private static void DetonateNeighbour(ref char originalValue)
+        {
+            originalValue = originalValue == '1' ? '1' : '.';
+        }
+
+        public static List<string> bomberMan(int n, List<string> grid)
+        {
+            for (int j = 0; j < grid.Count; j++)
+            {
+                grid[j] = grid[j].Replace('O', '1');
+            }
+            int i = 2;
+
+            while (i <= n)
+            {
+                if (i % 2 == 0)
+                {
+                    for (int j = 0; j < grid.Count; j++)
+                    {
+                        grid[j] = grid[j].Replace('.', 'O');
+                    }
+                }
+                else
+                {
+                    for (int j = 0; j < grid.Count; j++)
+                    {
+                        while (grid[j].IndexOf('1') > -1)
+                        {
+                            int rowBombIndex = grid[j].IndexOf('1');
+                            char[] rowAsChar = grid[j].ToCharArray();
+
+                            #region Detonate Horizontal and Center
+                            if (rowBombIndex > 0)
+                            {
+                                DetonateNeighbour(ref rowAsChar[rowBombIndex - 1]);
+                            }
+
+                            rowAsChar[rowBombIndex] = '.';
+
+                            if (rowBombIndex != grid[j].Count() - 1)
+                            {
+                                DetonateNeighbour(ref rowAsChar[rowBombIndex + 1]);
+                            }
+
+                            grid[j] = new string(rowAsChar);
+                            #endregion
+
+                            #region Detonate Vertical
+                            if (j > 0)
+                            {
+                                rowAsChar = grid[j - 1].ToCharArray();
+                                DetonateNeighbour(ref rowAsChar[rowBombIndex]);
+
+                                grid[j - 1] = new String(rowAsChar);
+                            }
+
+                            if (j != grid.Count - 1)
+                            {
+                                rowAsChar = grid[j + 1].ToCharArray();
+                                DetonateNeighbour(ref rowAsChar[rowBombIndex]);
+
+                                grid[j + 1] = new String(rowAsChar);
+                            }
+                            #endregion
+                        }
+                    }
+
+                    for (int j = 0; j < grid.Count; j++)
+                    {
+                        grid[j] = grid[j].Replace('O', '1');
+                    }
+                }
+
+                i++;
+            }
+
+            for (int j = 0; j < grid.Count; j++)
+            {
+                grid[j] = grid[j].Replace('1', 'O');
+            }
+
+            return grid;
+        }
+
+    }
